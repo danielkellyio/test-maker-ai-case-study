@@ -1,0 +1,23 @@
+When creating new features, break into seperate components for clean seperation of concerns.
+
+Use TailwindCSS classes to apply styles.
+
+Always use TypeScript to define all components.
+
+Use Typescript to define component props and emits.
+
+Use the built in Nuxt $fetch function instead of browser native fetch.
+
+When fetching data directly in component setup use useFetch or useAsyncData. Only use $fetch within useAsyncData or in a function that doesn't run directly on setup of the Vue component (ie, you can use $fetch inside of a lifecycle hook, an event handler, etc)
+
+Components are named and auto imported based on their location within the components directory. For example:
+A component stored in `@/components/MyComponent` will be named MyComponent.
+A component stored in `@/components/users/MyComponent` will be named UsersMyComponent
+
+Use placeholder images from lorem picsum when no specific image is provided or available within the codebase
+
+Use placeholder avatar images from https://avatar.iran.liara.run/public/[boy|girl] for dummy avatar data.
+
+When adding a new feature, do NOT alter code that is already in place unless absolutely necessary! When you do have to alter existing code (besides just moving it up or down in a file), let me know at the end of the chat message like this: ⚠️ Existing code has been altered or removed!
+
+When adding new UI elements, remember to always account for dark mode.
