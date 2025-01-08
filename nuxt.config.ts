@@ -15,7 +15,10 @@ export default defineNuxtConfig({
   content: {
     // Optional: Configure content module
     highlight: {
-      theme: "github-dark",
+      theme: {
+        default: "github-light",
+        dark: "github-dark",
+      },
     },
   },
   colorMode: {
@@ -30,6 +33,6 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    domains: [],
+    domains: ["avatars.githubusercontent.com"],
   },
 });

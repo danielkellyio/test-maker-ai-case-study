@@ -23,8 +23,10 @@ The Composition API offers several advantages:
 Let's look at some real-world scenarios where the Composition API shines:
 
 ```vue
+<script setup lang="ts">
 const useCounter = () => { const count = ref(0) const increment = () =>
 count.value++ return { count, increment } }
+</script>
 ```
 
 ## Best Practices
