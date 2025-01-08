@@ -4,6 +4,7 @@
       :title="postData?.title"
       :author="authorData"
       :date="postData?.date"
+      :author-path="`/authors/${postData?.author}`"
     />
 
     <!-- Main Content -->

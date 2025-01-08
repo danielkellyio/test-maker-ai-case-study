@@ -1,8 +1,8 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="mt-8">
+  <form class="mt-8" @submit.prevent="handleSubmit">
     <div class="space-y-4">
       <div>
-        <label for="comment" class="block mb-1 text-lg font-semibold mb-6"
+        <label for="comment" class="block mb-6 text-lg font-semibold"
           >Leave a Comment</label
         >
         <textarea
@@ -10,12 +10,12 @@
           v-model="formData.content"
           rows="4"
           required
-          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700"
-        ></textarea>
+          class="px-4 py-2 w-full rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700"
+        />
       </div>
       <button
         type="submit"
-        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="px-6 py-2 text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
       >
         Submit Comment
       </button>
@@ -25,7 +25,6 @@
 
 <script setup lang="ts">
 interface CommentFormData {
-  name: string;
   content: string;
 }
 

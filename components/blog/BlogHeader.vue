@@ -1,48 +1,39 @@
 <template>
-  <div class="mb-8">
-    <nav class="text-sm mb-4">
+  <header class="mb-8">
+    <h1 class="text-4xl font-bold mb-4">{{ title }}</h1>
+    <div class="flex items-center gap-4">
       <NuxtLink
-        to="/"
-        class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+        v-if="author && authorPath"
+        :to="authorPath"
+        class="flex items-center gap-2 hover:text-primary-600"
       >
-        Home
+        <img
+          :src="author.avatar"
+          :alt="author.name"
+          class="w-10 h-10 rounded-full object-cover"
+        />
+        <span>{{ author.name }}</span>
       </NuxtLink>
-      <span class="mx-2 text-gray-400">/</span>
-      <NuxtLink
-        to="/blog"
-        class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+      <time
+        v-if="date"
+        :datetime="date"
+        class="text-gray-600 dark:text-gray-400"
       >
-        Blog
-      </NuxtLink>
-    </nav>
-    <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-      {{ title }}
-    </h1>
-    <div class="flex items-center gap-4 text-gray-600 dark:text-gray-400">
-      <div class="flex items-center gap-2">
-        <Avatar :src="author?.avatar" :alt="author?.name" size="md" />
-        <span>{{ author?.name }}</span>
-      </div>
-      <span>•</span>
-      <time>{{ formatDate(date) }}</time>
+        {{ formatDate(date) }}
+      </time>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
-interface Props {
-  title: string;
-  author: {
-    name: string;
-    avatar: string;
-    bio?: string;
-  } | null;
-  date: string;
-}
+const props = defineProps<{
+  title?: string;
+  author?: ContentAuthor;
+  date?: string;
+  authorPath?: string;
+}>();
 
-const props = defineProps<Props>();
-
-const formatDate = (date) => {
+const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

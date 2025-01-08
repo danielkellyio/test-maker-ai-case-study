@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "nuxt-auth-utils",
     "@nuxt/eslint",
     "@nuxt/icon",
+    "@nuxt/image",
   ],
   content: {
     // Optional: Configure content module
@@ -27,5 +28,8 @@ export default defineNuxtConfig({
         clientSecret: process.env.NUXT_OAUTH_GITHUB_CLIENT_SECRET,
       },
     },
+  },
+  image: {
+    domains: [],
   },
 });

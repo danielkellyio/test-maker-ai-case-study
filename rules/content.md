@@ -25,5 +25,3 @@ Apply the following rules when working with content stored in the content direct
 ```
  queryContent<ContentPost>('blog').findOne()
 ```
-
--

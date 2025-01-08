@@ -38,3 +38,11 @@ When adding new Vue components, always:
 - remind me to create a unit test for the component
   - for presentational components use snapshot tests
   - for any components with logic, test the props down/events up, and the necessary user interactions
+- Use NuxtImg as a drop in replacement for any img tag. Be sure to specify appropriate width and heights to prevent CLS and configure styles so that the image is NEVER stretched or distorted
+- When using NuxtImg on a src url that is from another site, make sure the domain is registered in nuxt.config.ts like this:
+
+  ```
+  image: {
+    domains: ["images.unsplash.com", "[the-domain-here]", "etc"],
+  },
+  ```

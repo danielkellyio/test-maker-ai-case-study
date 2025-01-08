@@ -1,35 +1,26 @@
 <script setup lang="ts">
-interface Author {
-  name: string;
-  bio: string;
-  avatar?: string;
-  twitter?: string;
-  github?: string;
-  website?: string;
-}
-
 const props = defineProps<{
   authorSlug: string;
 }>();
 
-const { data: author } = await useAsyncData<Author>(
-  `author-${props.authorSlug}`,
-  () =>
-    queryContent("authors")
-      .where({ _path: `/authors/${props.authorSlug}` })
-      .findOne()
+const { data: author } = await useAsyncData(`author-${props.authorSlug}`, () =>
+  queryContent<ContentAuthor>("authors")
+    .where({ _path: `/authors/${props.authorSlug}` })
+    .findOne()
 );
 </script>
 
 <template>
   <div
     v-if="author"
-    class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+    class="flex gap-4 items-center p-4 bg-gray-50 rounded-lg dark:bg-gray-800"
   >
-    <img
+    <NuxtImg
       :src="author.avatar"
       :alt="author.name"
       class="w-16 h-16 rounded-full"
+      width="64"
+      height="64"
     />
     <div>
       <h3 class="text-lg font-semibold dark:text-white">{{ author.name }}</h3>
@@ -62,6 +53,12 @@ const { data: author } = await useAsyncData<Author>(
         >
           Website
         </a>
+        <NuxtLink
+          v-if="author.website"
+          :to="`/authors/${author._path.split('/').at(-1)}`"
+        >
+          Other Posts
+        </NuxtLink>
       </div>
     </div>
   </div>
