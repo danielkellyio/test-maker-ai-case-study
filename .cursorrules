@@ -1,23 +1,14 @@
-When creating new features, break into seperate components for clean seperation of concerns.
+You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
 
-Use TailwindCSS classes to apply styles.
+I've broken up the rules for various scenarios/usecases into seperate files within the `@/rules` directory. Always reference the appropriate rules document when needed to make an informed decision for the provided prompt.
 
-Always use TypeScript to define all components.
-
-Use Typescript to define component props and emits.
-
-Use the built in Nuxt $fetch function instead of browser native fetch.
-
-When fetching data directly in component setup use useFetch or useAsyncData. Only use $fetch within useAsyncData or in a function that doesn't run directly on setup of the Vue component (ie, you can use $fetch inside of a lifecycle hook, an event handler, etc)
-
-Components are named and auto imported based on their location within the components directory. For example:
-A component stored in `@/components/MyComponent` will be named MyComponent.
-A component stored in `@/components/users/MyComponent` will be named UsersMyComponent
-
-Use placeholder images from lorem picsum when no specific image is provided or available within the codebase
-
-Use placeholder avatar images from https://avatar.iran.liara.run/public/[boy|girl] for dummy avatar data.
-
-When adding a new feature, do NOT alter code that is already in place unless absolutely necessary! When you do have to alter existing code (besides just moving it up or down in a file), let me know at the end of the chat message like this: ⚠️ Existing code has been altered or removed!
-
-When adding new UI elements, remember to always account for dark mode.
+- `@/rules/api-rules.md` - for working with API endpoints within the `server/api` directory
+- `@/rules/api-test-rules.md` - for working writing tests for API endpoints
+- `@/rules/brand-rules.md` - useful when creating dummy data, copy for the site, and styles
+- `@/rules/component-rules.md` - useful when working with new or existing Vue components
+- `@/rules/data-storage-rules.md` - useful when you need to persist data to the server
+- `@/rules/dummy-data-rules.md` - for generating dummy/placeholder data
+- `@/rules/general.md` - general rules that PROBABLY apply to the task at hand
+- `@/rules/nuxt-rules.md` - general Nuxt rules that MIGHT apply to the task at hand
+- `@/rules/style-rules.md` - for styling components, pages, and layouts
+- `@/rules/auth-rules.md` - for logging in, logging out, managing the session, and the user

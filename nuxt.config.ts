@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
     "nuxt-auth-utils",
+    "@nuxt/eslint",
   ],
   content: {
     // Optional: Configure content module
