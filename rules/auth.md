@@ -91,5 +91,6 @@ const session = await getUserSession(event);
 await clearUserSession(event);
 
 // Require a user session (send back 401 if no `user` key in session)
+// this is auto-imported!
 const session = await requireUserSession(event);
 ```

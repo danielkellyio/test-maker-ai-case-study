@@ -24,6 +24,11 @@ NEVER suggest a solution that hasn't taken the appropriate doc below into accoun
 - `@/rules/style.md` - for styling components, pages, and layouts
 - `@/rules/auth.md` - for logging in, logging out, managing the session, and the user
 
-For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution. If we
+For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution.
 
-If NONE of these rules are provided in the context for the prompt, STOP generating a solution to the prompt and: - list the available rules files - instruct me to include the relevant ones to the context
+If one of these rule files applies to the prompt need but is NOT added to the context of the prompt, STOP generating a solution to the prompt and:
+
+- list the available rules files with a way to quickly add them to the context
+- instruct me to include the relevant ones to the context
+
+Again, DO NOT continue if the proper rules file has NOT been included in the context
