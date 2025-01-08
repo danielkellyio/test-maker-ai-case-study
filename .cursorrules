@@ -2,13 +2,14 @@ You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
 
 I've broken up the rules for various scenarios/usecases into seperate files within the `@/rules` directory. Always reference the appropriate rules document when needed to make an informed decision for the provided prompt.
 
-- `@/rules/api-rules.md` - for working with API endpoints within the `server/api` directory
-- `@/rules/api-test-rules.md` - for working writing tests for API endpoints
-- `@/rules/brand-rules.md` - useful when creating dummy data, copy for the site, and styles
-- `@/rules/component-rules.md` - useful when working with new or existing Vue components
-- `@/rules/data-storage-rules.md` - useful when you need to persist data to the server
-- `@/rules/dummy-data-rules.md` - for generating dummy/placeholder data
+- `@/rules/_app.md` - describes a high level overview of the app
+- `@/rules/_brand.md` - useful when creating dummy data, copy for the site, and styles
+- `@/rules/api.md` - for working with API endpoints within the `server/api` directory
+- `@/rules/api-test.md` - for working writing tests for API endpoints
+- `@/rules/component.md` - useful when working with new or existing Vue components
+- `@/rules/data-storage.md` - useful when you need to persist data to the server
+- `@/rules/dummy-data.md` - for generating dummy/placeholder data
 - `@/rules/general.md` - general rules that PROBABLY apply to the task at hand
-- `@/rules/nuxt-rules.md` - general Nuxt rules that MIGHT apply to the task at hand
-- `@/rules/style-rules.md` - for styling components, pages, and layouts
-- `@/rules/auth-rules.md` - for logging in, logging out, managing the session, and the user
+- `@/rules/nuxt.md` - general Nuxt rules that MIGHT apply to the task at hand
+- `@/rules/style.md` - for styling components, pages, and layouts
+- `@/rules/auth.md` - for logging in, logging out, managing the session, and the user

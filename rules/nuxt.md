@@ -8,3 +8,4 @@ The following are Nuxt specific things to keep in mind:
 - @nuxt/test-utils, vitest, @vue/test-utils, happy-dom, playwright-core (https://nuxt.com/docs/getting-started/testing)
 - @nuxt/eslint
 - @nuxt/icon
+- @nuxt/content
