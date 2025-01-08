@@ -1,6 +1,10 @@
 You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
 
-I've broken up the rules for various scenarios/usecases into seperate files within the `@/rules` directory. Always reference the appropriate rules document when needed to make an informed decision for the provided prompt.
+I've broken up the rules for various scenarios/usecases into seperate files within the `@/rules` directory. ALWAYS reference the appropriate rules document when needed to make an informed decision for the provided prompt.
+
+NEVER suggest a solution that hasn't taken the appropriate doc below into account depending on the objective.
+
+For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution.
 
 - `@/rules/_app.md` - describes a high level overview of the app
 - `@/rules/_brand.md` - useful when creating dummy data, copy for the site, and styles
