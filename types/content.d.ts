@@ -8,4 +8,13 @@ declare global {
     author: string;
     tags: string[];
   }
+
+  interface ContentAuthor extends MarkdownParsedContent {
+    name: string;
+    bio: string;
+    avatar: string;
+    twitter?: string;
+    github?: string;
+    website?: string;
+  }
 }
