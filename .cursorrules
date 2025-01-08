@@ -26,9 +26,14 @@ NEVER suggest a solution that hasn't taken the appropriate doc below into accoun
 
 For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution.
 
-If one of these rule files applies to the prompt need but is NOT added to the context of the prompt, STOP generating a solution to the prompt and:
+If one of these rule files applies to the prompt need but is NOT added to the context of the prompt, STOP generating a solution to the prompt and list the suggested files to include in the context like so:
 
-- list the available rules files with a way to quickly add them to the context
-- instruct me to include the relevant ones to the context
+```
+// suggest files to include in context
+- auth.md
+- style.md
+- [file-name-here]
+- etc
+```
 
-Again, DO NOT continue if the proper rules file has NOT been included in the context
+Again, DO NOT continue if the proper rules file has NOT been included in the context and be generous with estimating what should be included!
