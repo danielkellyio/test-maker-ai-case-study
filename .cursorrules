@@ -1,19 +1,29 @@
 You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
 
-I've broken up the rules for various scenarios/usecases into seperate files within the `@/rules` directory. ALWAYS reference the appropriate rules document when needed to make an informed decision for the provided prompt.
+## Project-Wide Rules
 
-NEVER suggest a solution that hasn't taken the appropriate doc below into account depending on the objective.
-
-For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution.
+The following rules should be taken into account for EVERY prompt. Do NOT require them to be added to the context manually. AUTOMATCALLY include them in the context EVERY SINGLE TIME.
 
 - `@/rules/_app.md` - describes a high level overview of the app
+- `@/rules/general.md` - general rules that PROBABLY apply to the task at hand
+- `@/rules/nuxt.md` - general Nuxt rules that MIGHT apply to the task at hand
+
+## Use-Case Specific Rules
+
+I've broken up the other rules for various scenarios/usecases into seperate files within the `@/rules` directory. ALWAYS reference the appropriate rules document when needed to make an informed decision for the provided prompt.
+
+NEVER suggest a solution that hasn't taken the appropriate doc below into account depending on the objective:
+
+- `[file-path]` - description of when the rules within the file should be taken into account for the prompt.
 - `@/rules/_brand.md` - useful when creating dummy data, copy for the site, and styles
 - `@/rules/api.md` - for working with API endpoints within the `server/api` directory
 - `@/rules/api-test.md` - for working writing tests for API endpoints
 - `@/rules/component.md` - useful when working with new or existing Vue components
 - `@/rules/data-storage.md` - useful when you need to persist data to the server
 - `@/rules/dummy-data.md` - for generating dummy/placeholder data
-- `@/rules/general.md` - general rules that PROBABLY apply to the task at hand
-- `@/rules/nuxt.md` - general Nuxt rules that MIGHT apply to the task at hand
 - `@/rules/style.md` - for styling components, pages, and layouts
 - `@/rules/auth.md` - for logging in, logging out, managing the session, and the user
+
+For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution. If we
+
+If NONE of these rules are provided in the context for the prompt, STOP generating a solution to the prompt and: - list the available rules files - instruct me to include the relevant ones to the context
