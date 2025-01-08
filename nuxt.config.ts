@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-auth-utils",
     "@nuxt/eslint",
+    "@nuxt/icon",
   ],
   content: {
     // Optional: Configure content module
