@@ -29,6 +29,7 @@
     "happy-dom": "^15.11.7",
     "playwright-core": "^1.49.1",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "zod": "^3.24.1"
   }
 }
