@@ -2,12 +2,12 @@
   <div class="space-y-6">
     <BlogCommentsList :comments="comments" />
     <BlogCommentsLogin v-if="!loggedIn" />
-    <BlogCommentsForm v-else v-model="commentContent" @submit="submitComment" />
+    <BlogCommentsForm v-else @submit="submitComment" />
   </div>
 </template>
 
 <script setup lang="ts">
-const { loggedIn, user } = useUserSession();
+const { loggedIn } = useUserSession();
 
 const props = defineProps<{
   path: string;
@@ -32,7 +32,6 @@ const submitComment = async (formData: { content: string }) => {
   });
 
   comments.value.push(newComment);
-  commentContent.value = "";
 };
 
 // Initial fetch
