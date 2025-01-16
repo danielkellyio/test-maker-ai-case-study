@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/icon",
     "@nuxt/image",
+    "shadcn-nuxt",
   ],
   content: {
     // Optional: Configure content module
@@ -34,5 +35,20 @@ export default defineNuxtConfig({
   },
   image: {
     domains: ["avatars.githubusercontent.com"],
+  },
+  nitro: {
+    storage: {},
+  },
+
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: "./components/ui",
   },
 });

@@ -1,12 +1,156 @@
 You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
 
-## Project-Wide Rules
+## High Level Project Spec
 
-The following rules should be taken into account for EVERY prompt. Do NOT require them to be added to the context manually. AUTOMATCALLY include them in the context EVERY SINGLE TIME.
+This section gives a high-level overview of the app we're creating in this project.
 
-- `@/rules/_app.md` - describes a high level overview of the app
-- `@/rules/general.md` - general rules that PROBABLY apply to the task at hand
-- `@/rules/nuxt.md` - general Nuxt rules that MIGHT apply to the task at hand
+- It's a test creator that takes in screenshots of pages from a text book and outputs an interactive exam.
+- The primary audience of this application is home school teachers who need to create tests for their students
+- Users expect a friendly but professional look and feel
+
+## Project Dependencies Patterns and Rules
+
+The following Nuxt modules and dependencies are definitely installed and can be utilized in the proper places (this is NOT an exhaustive list):
+
+- nuxt-auth-utils (https://github.com/atinux/nuxt-auth-utils)
+- @vueuse/nuxt
+- @nuxtjs/tailwindcss
+- @nuxt/test-utils, vitest, @vue/test-utils, happy-dom, playwright-core (https://nuxt.com/docs/getting-started/testing)
+- @nuxt/eslint
+- @nuxt/icon
+- @nuxt/content
+- shadcn-nuxt
+
+## Styles Patterns and Rules
+
+This section describes rules to use when styling components or pages
+
+- Use TailwindCSS classes to apply styles.
+- Always account for dark mode.
+
+## General Coding Patterns and Rules
+
+This section describes general rules for code throughout the project:
+
+- When adding a new feature, do NOT alter code that is already in place unless necessary. If you do alter existing code besides simply moving it up or down in the file where it already exists, warn me (❗️SHOUT WITH LARGE LETTERS❗️) and thoroughly explain your reasoning for moving it.
+- always leave explanatory comments inline in the code to help me better understand what's happening in a file when I come back to it later. Use these comments to explain why the code was written as it was.
+
+## API Endpoint Coding Patterns and Rules
+
+This section describes some patterns to follow when creating and ONLY when creating a new API endpoint in the `server/api` directory.
+
+- define an API endpoint as in this example:
+
+```
+import { z } from "zod";
+export default defineApiEventHandler({
+  validation: z.object({
+    name: z.string(),
+    age: z.coerce.number().optional(),
+  }),
+  handler(event, payload) {
+    return payload;
+  },
+});
+```
+
+- Use zod to validate the request payload (this includes query variables, JSON body, and route params all spread into a single object)
+- extract database and other storage logic into a separate service and use the service in the API endpoint
+- create all CRUD methods for an API as seperate files. For example:
+  - `[file-path]` | [method] | `[url]`
+  - `server/api/posts/index.ts` | GET | `api/posts/`
+  - `server/api/posts/index.post.ts` | POST | `api/posts/`
+  - `server/api/posts/[id].put.ts` | PUT | `api/posts/[id]`
+  - `server/api/posts/[id].delete.ts` | DELETE | `api/posts/[id]`
+- NEVER handle different request methods for an API endpoint in the same file.
+
+## Server Service Coding Patterns and Rules
+
+This section describes some patterns to follow when creating server-side services in `server/utils/services` for use within API endpoints. These rules ONLY apply for server-side services.
+
+- all server-side services should live in relevant files within `@/server/utils/services` (such as `@/server/utils/services/users.service.ts` for user services)
+- All server-side services should also be exported from `@/server/utils/services/index.ts` so that they are auto-imported. For example:
+- For example:
+
+  ```
+  // @/server/helpers/services/user.service.ts
+  export const useUserService(){}
+
+  // @/server/helper/services/index.ts
+  export * from "./user.service.ts"
+
+  ```
+
+## API Endpoint Guards Coding Patterns and Rules
+
+- define and/or use existing server utils that are defined in `server/utils/guards` to apply route specific middleware/guards.
+- Such middleware/guards should be functions that either throw a new error with createError and a relevant statusCode or return an aribtrary body.
+- This middleware should also always be passed the validated payload
+
+## Vue Component Coding Patterns and Rules
+
+This section describes some patterns to follow when creating new or updating existing Vue components.
+
+- Shad-cn Vue is installed and can be used to generate most common UI elements. Only create a new custom component is shad-cn doesn't already have a solution.
+- Shad-cn Vue components can be installed with a bash command like so: npx shadcn-vue@latest add button [or any other component]
+- NEVER try to generate a ShadCN component, rather always prompt me to install it when needed
+- Do NOT create long components with a lot of responsibilities. Instead, break components down into smaller, more focused components
+- make most components "dumb" components. These focus on:
+  - presentation
+  - simple logic
+  - Dumb components should include the keyword `dumb` before the file suffix like this: `UserProfileCard.dumb.vue`
+- Limit "smart" components that make requests to API endpoints to only what's absolutely necessary
+  - Smart components should include the keyword `smart` before the file suffix like this: `UserProfileCard.smart.vue`
+- break complex logic into composables or utility functions
+- Always use TypeScript to define all components.
+- Use Typescript to define component props and emits.
+- use JS docs to document component props and emits
+- Use script setup
+- Provide the component sections in the following order:
+  - script
+  - template
+  - style
+- Use the built in Nuxt $fetch function instead of browser native fetch when reacting to user events and in lifecylcle hooks (except setup). Basically, anything that only runs in the browser (in the client) should use $fetch
+- Any code that runs at the root level of script setup, should make https requests with useFetch or useAsyncData. Prefer useFetch when possible.
+- Example of when to use $fetch vs useFetch:
+
+```
+<script setup lang="ts">
+  const { data: users } = await useFetch("/api/users");
+  async function createUser(newUser: User){
+   const newUser = await $fetch('/api/users', {
+       method: 'POST',
+       body: newUser
+   })
+  }
+```
+
+-Components are named and auto imported based on their location within the components directory. For example:
+
+- A component stored in `@/components/MyComponent` will be named MyComponent.
+- A component stored in `@/components/users/UsersMyComponent` will be named UsersMyComponent
+- ALWAYS prefix the component name with any directory it's nested under within the components directory
+
+- Always use NuxtImg as a drop in replacement for ANY img tag. Be sure to specify appropriate width and heights to prevent CLS and configure styles so that the image is NEVER stretched or distorted
+- When using NuxtImg on a src url that is from another site, make sure the domain is registered in nuxt.config.ts like this:
+
+  ```
+  image: {
+    domains: ["images.unsplash.com", "[the-domain-here]", "etc"],
+  },
+  ```
+
+## Data Storage Coding Patterns and Rules
+
+- interact with the database only from within a server-side service
+
+## Dummy Data Coding Patterns and Rules
+
+When adding new dummy data always:
+
+- Use placeholder images from lorem picsum when no specific image is provided or available within the codebase
+
+- Use placeholder avatar images from https://avatar.iran.liara.run/public/[boy|girl] for dummy avatar data if nothing specific is provided
 
 ## Use-Case Specific Rules
 
