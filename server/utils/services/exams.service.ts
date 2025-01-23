@@ -1,12 +1,15 @@
 import { examsTable, scannedPagesTable } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
-
 export type Exam = typeof examsTable.$inferInsert;
+
 export function useExamsService() {
   const db = useDb();
 
   async function createExam(exam: Partial<Exam>) {
-    const exams = await db.insert(examsTable).values(exam).returning();
+    const exams = await db
+      .insert(examsTable)
+      .values({ ...exam, createdBy: user?.id })
+      .returning();
     return exams.at(0);
   }
 
