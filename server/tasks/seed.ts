@@ -1,12 +1,12 @@
 import * as schema from "../db/schema";
 import { seed } from "drizzle-seed";
-
+import { eq } from "drizzle-orm";
 export default defineTask({
   meta: {
     name: "seed",
     description: "Seed database users",
   },
-  async run() {
+  async run({ payload }) {
     const tags = [
       "Math",
       "Science",
@@ -51,15 +51,15 @@ export default defineTask({
       const tables = Object.keys(schema);
 
       // delete all the existing data
-      for (const table of tables) {
-        // truncate the table
-        await db.delete(schema[table as keyof typeof schema]);
+      if (payload.reset) {
+        for (const table of tables) {
+          // truncate the table
+          await db.delete(schema[table as keyof typeof schema]);
+        }
       }
 
-      const hashedPassword = await hashPassword("password");
-
       await seed(db, schema, {
-        seed: 1,
+        seed: Math.random(),
       }).refine((f) => {
         return {
           examsTable: {
@@ -111,21 +111,6 @@ export default defineTask({
               name: f.valuesFromArray({
                 values: tags,
                 isUnique: true,
-              }),
-            },
-          },
-          usersTable: {
-            count: 1000,
-            columns: {
-              role: f.valuesFromArray({
-                values: ["admin", "teacher", "student"],
-              }),
-              createdAt: f.timestamp(),
-              updatedAt: f.timestamp(),
-              id: f.uuid(),
-              password: f.valuesFromArray({
-                // hash the password
-                values: [hashedPassword],
               }),
             },
           },
