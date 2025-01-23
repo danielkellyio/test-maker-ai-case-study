@@ -54,6 +54,10 @@ export function useExamsService() {
     return exams.at(0);
   }
 
+  async function getExams() {
+    return db.query.examsTable.findMany();
+  }
+
   return {
     createExam,
     getExam,
@@ -61,5 +65,6 @@ export function useExamsService() {
     deleteExam,
     getExamWithScannedPages,
     getExamWithQuestions,
+    getExams,
   };
 }
