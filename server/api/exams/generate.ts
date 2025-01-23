@@ -8,6 +8,7 @@ export default defineApiEventHandler({
   async handler(event, payload) {
     // Get the anthropic service to generate the exam
     const { generateExam } = useAnthropicService();
+    const { createQuestions } = useQuestionsService();
 
     try {
       // Get the exam from the database and generate test content
@@ -18,7 +19,17 @@ export default defineApiEventHandler({
         payload
       );
 
-      return generatedExam;
+      // Create the questions in the database
+      const questions = await createQuestions(
+        generatedExam.questions.map((question) => {
+          return {
+            ...question,
+            examId: payload.examId,
+          };
+        })
+      );
+
+      return questions;
     } catch (error) {
       console.error("Error generating exam:", error);
       throw createError({

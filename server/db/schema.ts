@@ -63,6 +63,7 @@ export const questionsTable = pgTable("questions", {
   answer: text("answer"), // ONLY for essay, true-false, and fill-in-the-blank NOT for multiple-choice
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
+  explanation: text("explanation"),
 });
 
 export const optionsTable = pgTable("options", {

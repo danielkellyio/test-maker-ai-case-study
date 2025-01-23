@@ -50,8 +50,9 @@ const examTemplateForLLM = {
   ],
 } as const;
 
-export type LLMExamResponse = typeof examTemplateForLLM & {
+export type LLMExamResponse = {
   numberOfQuestionsCreated: number;
+  questions: Omit<typeof questionsTable.$inferInsert, "id">[];
 };
 
 interface CreateTestPromptOptions {
