@@ -1,5 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createError } from "h3";
+import {
+  createTestPrompt,
+  type LLMExamResponse,
+} from "@/server/prompts/createTestPrompt";
+import type { questionsTable } from "@/server/db/schema";
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -75,7 +80,90 @@ export const useAnthropicService = () => {
     }
   };
 
+  async function generateExam(
+    exam: Exam,
+    {
+      numberOfQuestions = 10,
+      existingQuestions = [],
+    }: {
+      numberOfQuestions?: number;
+      existingQuestions?: (typeof questionsTable.$inferSelect)[];
+    }
+  ): Promise<LLMExamResponse> {
+    const { getExamWithScannedPages } = useExamsService();
+
+    if (!exam || !exam.id) {
+      throw createError({
+        statusCode: 400,
+        message: "Exam ID is required",
+      });
+    }
+
+    const examWithPages = await getExamWithScannedPages(exam.id);
+
+    if (!examWithPages) {
+      throw createError({
+        statusCode: 400,
+        message: "Exam with scanned pages not found",
+      });
+    }
+
+    const prompt = createTestPrompt(examWithPages, existingQuestions, {
+      numberOfQuestions,
+    });
+
+    useLoggerService().log(prompt);
+
+    const response = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 8192,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: prompt,
+            },
+          ],
+        },
+      ],
+    });
+
+    try {
+      const parsedResponse = JSON.parse(
+        // @ts-expect-error - text does exist
+        response.content[0].text
+      ) as LLMExamResponse;
+      if (parsedResponse.numberOfQuestionsCreated < numberOfQuestions) {
+        const moreQuestions = await generateExam(exam, {
+          numberOfQuestions:
+            numberOfQuestions - parsedResponse.numberOfQuestionsCreated,
+          existingQuestions: [
+            // @ts-expect-error - questions does exist
+            ...existingQuestions,
+            // @ts-expect-error - questions does exist
+            ...parsedResponse.questions,
+          ],
+        });
+        return {
+          ...moreQuestions,
+          // @ts-expect-error - questions does exist
+          questions: [...parsedResponse.questions, ...moreQuestions.questions],
+        };
+      }
+      return parsedResponse;
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      throw createError({
+        statusCode: 500,
+        message: "Failed to parse JSON from Claude",
+      });
+    }
+  }
+
   return {
     extractTextFromImage,
+    generateExam,
   };
 };

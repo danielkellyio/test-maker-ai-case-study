@@ -41,7 +41,12 @@ export default defineNuxtConfig({
     experimental: {
       tasks: true,
     },
-    storage: {},
+    storage: {
+      logs: {
+        driver: "fs",
+        base: "./.data/logs",
+      },
+    },
     scheduledTasks: {
       "* * * * *": ["scannedPages:process"],
     },

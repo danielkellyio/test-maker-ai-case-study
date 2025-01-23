@@ -10,12 +10,10 @@ export function useExamsService() {
     return exams.at(0);
   }
 
-  async function getExam(examId: string) {
-    const exams = await db
-      .select()
-      .from(examsTable)
-      .where(eq(examsTable.id, examId));
-    return exams.at(0);
+  function getExam(examId: string) {
+    return db.query.examsTable.findFirst({
+      where: eq(examsTable.id, examId),
+    });
   }
 
   async function getExamWithScannedPages(examId: string) {
