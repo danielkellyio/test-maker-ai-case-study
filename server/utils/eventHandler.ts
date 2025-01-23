@@ -1,13 +1,14 @@
 import type { EventHandler, EventHandlerRequest, H3Event } from "h3";
 import type { z } from "zod";
 import { ZodError } from "zod";
-
+import type { Guard } from "./guards";
 type ApiEventHandler<
   T extends EventHandlerRequest,
   D,
   S extends z.ZodType | undefined = undefined
 > = {
   validation?: S;
+  guards?: Guard[];
   handler: (
     event: H3Event<T>,
     payload: S extends z.ZodType ? z.infer<S> : unknown
@@ -25,12 +26,20 @@ export function defineApiEventHandler<
     return defineEventHandler(handlerOrConfig);
   }
 
-  const { validation, handler } = handlerOrConfig;
+  const { validation, handler, guards } = handlerOrConfig;
 
   return defineEventHandler<T>(async (event) => {
     try {
-      const data = await getPayload(event);
-      const payload = validation ? await validation.parseAsync(data) : data;
+      // get the rawData
+      const rawData = await getPayload(event);
+
+      // validate the rawData and transform it to the payload
+      const payload = await runValidation(rawData, validation);
+
+      // run guards
+      await runGuards(event, payload, guards);
+
+      // run the handler
       return handler(event, payload);
     } catch (err) {
       if (err instanceof ZodError) {
@@ -59,9 +68,26 @@ async function getPayload(event: H3Event) {
       ...body,
     };
   }
+  console.log("payload", payload);
 
   return {
     ...payload,
     ...event.context.params,
   };
+}
+
+// local function to run guards
+async function runGuards(event: H3Event, payload: unknown, guards?: Guard[]) {
+  if (!Array.isArray(guards)) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: `Guards must be an array`,
+    });
+  }
+  await Promise.all(guards.map((guard) => guard(event, payload)));
+}
+
+// local function to run validation
+async function runValidation(data: unknown, validation?: z.ZodType) {
+  return validation ? await validation.parseAsync(data) : data;
 }

@@ -12,7 +12,7 @@ This section gives a high-level overview of the app we're creating in this proje
 
 The following Nuxt modules and dependencies are definitely installed and can be utilized in the proper places (this is NOT an exhaustive list):
 
-- nuxt-auth-utils (https://github.com/atinux/nuxt-auth-utils)
+- @nuxtjs/supabase
 - @vueuse/nuxt
 - @nuxtjs/tailwindcss
 - @nuxt/test-utils, vitest, @vue/test-utils, happy-dom, playwright-core (https://nuxt.com/docs/getting-started/testing)
@@ -142,7 +142,24 @@ This section describes some patterns to follow when creating new or updating exi
 
 ## Data Storage Coding Patterns and Rules
 
-- interact with the database only from within a server-side service
+This section describes some patterns to follow when interacting with a database.
+
+- When you need to interact with the DB in an API endpoint do NOT do so directly. Instead always use a server-side service that interacts with the database.
+- Drizzle ORM is setup with a postgres database is setup in this project
+- The schema definitions are found in `server/db/schema.ts`
+- Seeds should be written in `server/tasks/seeds`
+- All tables should include createdAt and updatedAt columns
+- Do NOT use the supabase client side (browser) client to interact with the database. Use only API endpoints, server-side services, and drizzle
+
+## Supabase Coding Patterns and Rules
+
+This section describes some patterns to follow when interacting with Supabase and the Nuxt Supabase module.
+
+- The Nuxt Supabase module is installed in this project
+- ONLY use the Nuxt Supabase module to handle auth and file upload related functionality. For all database interactions only use API endpoints, drizzle, etc as already directed.
+- The `useSupabaseClient`, `useSupabaseSession`, and `useSupabaseUser` composables are auto imported in the Nuxt App
+- In the `server` directory you can interact with supabase via the following composables: `serverSupabaseClient`, `serverSupabaseServiceRole`, `serverSupabaseSession`, and `serverSupabaseUser`
+- Each of these server-side supabase helpers can be imported from "#supabase/server"
 
 ## Dummy Data Coding Patterns and Rules
 
@@ -152,32 +169,8 @@ When adding new dummy data always:
 
 - Use placeholder avatar images from https://avatar.iran.liara.run/public/[boy|girl] for dummy avatar data if nothing specific is provided
 
-## Use-Case Specific Rules
+## Authentication and User Management
 
-I've broken up the other rules for various scenarios/usecases into seperate files within the `@/rules` directory. ALWAYS reference the appropriate rules document when needed to make an informed decision for the provided prompt.
+This sections describes some patterns to follow when dealing with authentication and the current user.
 
-NEVER suggest a solution that hasn't taken the appropriate doc below into account depending on the objective:
-
-- `[file-path]` - description of when the rules within the file should be taken into account for the prompt.
-- `@/rules/_brand.md` - useful when creating dummy data, copy for the site, and styles
-- `@/rules/api.md` - for working with API endpoints within the `server/api` directory
-- `@/rules/api-test.md` - for working writing tests for API endpoints
-- `@/rules/component.md` - useful when working with new or existing Vue components
-- `@/rules/data-storage.md` - useful when you need to persist data to the server
-- `@/rules/dummy-data.md` - for generating dummy/placeholder data
-- `@/rules/style.md` - for styling components, pages, and layouts
-- `@/rules/auth.md` - for logging in, logging out, managing the session, and the user
-
-For example, if we are creating a new feature that needs to store data on the server: use the `@/rules/data-storage.md` doc to further guide your solution.
-
-If one of these rule files applies to the prompt need but is NOT added to the context of the prompt, STOP generating a solution to the prompt and list the suggested files to include in the context like so:
-
-```
-// suggest files to include in context
-- auth.md
-- style.md
-- [file-name-here]
-- etc
-```
-
-Again, DO NOT continue if the proper rules file has NOT been included in the context and be generous with estimating what should be included!
+- The project uses Supabase and the Nuxt Supabase module for dealing with authentication.

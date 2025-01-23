@@ -7,11 +7,11 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    "nuxt-auth-utils",
     "@nuxt/eslint",
     "@nuxt/icon",
     "@nuxt/image",
     "shadcn-nuxt",
+    "@nuxtjs/supabase",
   ],
   content: {
     // Optional: Configure content module
@@ -37,6 +37,9 @@ export default defineNuxtConfig({
     domains: ["avatars.githubusercontent.com"],
   },
   nitro: {
+    experimental: {
+      tasks: true,
+    },
     storage: {},
   },
 
@@ -50,5 +53,13 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: "./components/ui",
+  },
+  supabase: {
+    redirectOptions: {
+      exclude: ["/login", "/register", "/"],
+      login: "/login",
+      callback: "/confirm",
+      cookieRedirect: false,
+    },
   },
 });
