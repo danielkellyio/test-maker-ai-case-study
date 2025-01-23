@@ -11,10 +11,10 @@
       <!-- Main navigation links -->
       <div class="hidden space-x-4 md:flex">
         <NuxtLink
-          to="/dashboard/tests"
+          to="/dashboard/exams"
           class="text-sm text-muted-foreground hover:text-foreground"
         >
-          My Tests
+          Exams
         </NuxtLink>
         <NuxtLink
           to="/dashboard/questions"

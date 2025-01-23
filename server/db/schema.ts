@@ -39,6 +39,7 @@ export const examsTable = pgTable("exams", {
 
 export const examsRelations = relations(examsTable, ({ many }) => ({
   scannedPages: many(scannedPagesTable),
+  questions: many(questionsTable),
 }));
 
 export const scannedPagesRelations = relations(
@@ -66,6 +67,17 @@ export const questionsTable = pgTable("questions", {
   explanation: text("explanation"),
 });
 
+export const questionsRelations = relations(
+  questionsTable,
+  ({ one, many }) => ({
+    options: many(optionsTable),
+    exam: one(examsTable, {
+      fields: [questionsTable.examId],
+      references: [examsTable.id],
+    }),
+  })
+);
+
 export const optionsTable = pgTable("options", {
   id: uuid("id").primaryKey().defaultRandom(),
   questionId: uuid("questionId").references(() => questionsTable.id, {
@@ -75,7 +87,15 @@ export const optionsTable = pgTable("options", {
   isCorrect: integer("isCorrect").default(0),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
+  explanation: text("explanation"),
 });
+
+export const optionsRelations = relations(optionsTable, ({ one }) => ({
+  question: one(questionsTable, {
+    fields: [optionsTable.questionId],
+    references: [questionsTable.id],
+  }),
+}));
 
 export const submissionsTable = pgTable("submissions", {
   id: uuid("id").primaryKey().defaultRandom(),

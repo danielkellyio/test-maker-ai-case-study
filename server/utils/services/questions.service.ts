@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm";
 
-import { questionsTable } from "@/server/db/schema";
+import { questionsTable, optionsTable } from "@/server/db/schema";
 
 type Question = typeof questionsTable.$inferInsert;
+type Option = typeof optionsTable.$inferInsert;
 
 export function useQuestionsService() {
   async function getQuestionsForExam(examId: string) {
@@ -48,9 +49,39 @@ export function useQuestionsService() {
     });
   }
 
-  async function createQuestions(questions: Question[]) {
+  async function createQuestions(
+    questions: (Question & { options?: Option[] })[]
+  ) {
     const db = useDb();
-    return db.insert(questionsTable).values(questions).returning();
+    const questionsWithOptions: (Question & { options?: Option[] })[] = [];
+    const qs = await db.insert(questionsTable).values(questions).returning();
+
+    const optionsToStore = questions
+      .map((q) =>
+        q.options?.map((o) => ({
+          ...o,
+          questionId: qs.find((qsq) => qsq.question === q.question)?.id,
+        }))
+      )
+      .flat()
+      .filter((o) => o) as Option[];
+
+    console.log(optionsToStore);
+
+    const options = await db
+      .insert(optionsTable)
+      .values(optionsToStore)
+      .returning();
+
+    // Add options to the questions
+    qs.forEach((q) => {
+      questionsWithOptions.push({
+        ...q,
+        options: options.filter((o) => o.questionId === q.id),
+      });
+    });
+
+    return questionsWithOptions;
   }
 
   return {

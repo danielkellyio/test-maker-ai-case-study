@@ -26,6 +26,20 @@ export function useExamsService() {
     return exams;
   }
 
+  async function getExamWithQuestions(examId: string) {
+    const exams = await db.query.examsTable.findFirst({
+      where: eq(examsTable.id, examId),
+      with: {
+        questions: {
+          with: {
+            options: true,
+          },
+        },
+      },
+    });
+    return exams;
+  }
+
   async function updateExam(examId: string, exam: Partial<Exam>) {
     const exams = await db
       .update(examsTable)
@@ -46,5 +60,6 @@ export function useExamsService() {
     updateExam,
     deleteExam,
     getExamWithScannedPages,
+    getExamWithQuestions,
   };
 }

@@ -7,7 +7,7 @@ export default defineApiEventHandler({
    */
   validation: z.object({
     id: z.string(), // Route param for exam ID
-    include: z.enum(["scannedPages"]).optional(),
+    include: z.enum(["scannedPages", "questions"]).optional(),
   }),
 
   /**
@@ -20,15 +20,21 @@ export default defineApiEventHandler({
    * @returns The exam with its scanned pages
    */
   async handler(event, payload) {
-    const { getExam, getExamWithScannedPages } = useExamsService();
+    const { getExam, getExamWithScannedPages, getExamWithQuestions } =
+      useExamsService();
+    let exam;
 
-    const exam =
-      payload.include === "scannedPages"
-        ? await getExamWithScannedPages(payload.id)
-        : {
-            ...(await getExam(payload.id)),
-            scannedPages: null,
-          };
+    if (payload.include?.includes("scannedPages")) {
+      exam = await getExamWithScannedPages(payload.id);
+    }
+
+    if (payload.include?.includes("questions")) {
+      exam = await getExamWithQuestions(payload.id);
+    }
+
+    if (!payload.include || !payload.include.length) {
+      exam = await getExam(payload.id);
+    }
 
     if (!exam) {
       throw createError({
