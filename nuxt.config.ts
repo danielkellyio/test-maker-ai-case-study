@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "shadcn-nuxt",
     "@nuxtjs/supabase",
+    "@nuxtjs/mdc",
   ],
   content: {
     // Optional: Configure content module
@@ -41,6 +42,9 @@ export default defineNuxtConfig({
       tasks: true,
     },
     storage: {},
+    scheduledTasks: {
+      "* * * * *": ["scannedPages:process"],
+    },
   },
 
   shadcn: {

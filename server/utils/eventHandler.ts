@@ -78,6 +78,7 @@ async function getPayload(event: H3Event) {
 
 // local function to run guards
 async function runGuards(event: H3Event, payload: unknown, guards?: Guard[]) {
+  if (!guards) return;
   if (!Array.isArray(guards)) {
     throw createError({
       statusCode: 500,

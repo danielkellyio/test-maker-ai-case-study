@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useToast } from "@/components/ui/toast";
 const props = defineProps<{
   maxFileSize?: number; // in bytes, defaults to 10MB
 }>();
+
+const toast = useToast();
 
 const {
   isDragging,
@@ -18,14 +21,30 @@ const {
   storageBucket: "textbook-pages",
   maxFileSize: props.maxFileSize,
   onFilesProcessed: async (files) => {
-    const res = await $fetch("/api/textbook/process-images", {
-      method: "POST",
-      body: {
-        images: files.map((file) => file.uploadedUrl),
-      },
-    });
-    console.log(res);
-    // Handle processed files
+    try {
+      const res = await $fetch("/api/scannedPages/queue", {
+        method: "POST",
+        body: {
+          images: files.map((file) => file.uploadedUrl),
+        },
+      });
+
+      toast.toast({
+        title: "Success",
+        description: "Your files have been queued for processing",
+        variant: "default",
+      });
+      navigateTo(`/dashboard/exams/${res.exam.id}`);
+    } catch (error) {
+      toast.toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to queue files for processing",
+        variant: "destructive",
+      });
+    }
   },
 });
 </script>

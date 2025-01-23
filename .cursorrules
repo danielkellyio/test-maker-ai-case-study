@@ -98,9 +98,8 @@ This section describes some patterns to follow when creating new or updating exi
 - make most components "dumb" components. These focus on:
   - presentation
   - simple logic
-  - Dumb components should include the keyword `dumb` before the file suffix like this: `UserProfileCard.dumb.vue`
+  - Dumb components should include the keyword `Dumb` before the file suffix like this: `UserProfileCardDumb.vue`
 - Limit "smart" components that make requests to API endpoints to only what's absolutely necessary
-  - Smart components should include the keyword `smart` before the file suffix like this: `UserProfileCard.smart.vue`
 - break complex logic into composables or utility functions
 - Always use TypeScript to define all components.
 - Use Typescript to define component props and emits.
@@ -150,6 +149,7 @@ This section describes some patterns to follow when interacting with a database.
 - Seeds should be written in `server/tasks/seeds`
 - All tables should include createdAt and updatedAt columns
 - Do NOT use the supabase client side (browser) client to interact with the database. Use only API endpoints, server-side services, and drizzle
+- Whenever you need access to the db instance to ineract with drizzle, you can call `useDb`. It is auto imported on the server
 
 ## Supabase Coding Patterns and Rules
 

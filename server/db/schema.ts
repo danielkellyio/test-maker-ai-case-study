@@ -1,4 +1,5 @@
 import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const usersTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -16,9 +17,15 @@ export const scannedPagesTable = pgTable("scannedPages", {
   id: uuid("id").primaryKey().defaultRandom(),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
+  examId: uuid("examId").references(() => examsTable.id, {
+    onDelete: "cascade",
+  }),
   pageNumber: text("pageNumber"),
   pageText: text("pageText"),
   pageImage: text("pageImage"),
+  status: text("status", {
+    enum: ["pending", "processing", "completed", "failed"],
+  }).default("pending"),
 });
 
 export const examsTable = pgTable("exams", {
@@ -29,6 +36,20 @@ export const examsTable = pgTable("exams", {
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
 });
+
+export const examsRelations = relations(examsTable, ({ many }) => ({
+  scannedPages: many(scannedPagesTable),
+}));
+
+export const scannedPagesRelations = relations(
+  scannedPagesTable,
+  ({ one }) => ({
+    exam: one(examsTable, {
+      fields: [scannedPagesTable.examId],
+      references: [examsTable.id],
+    }),
+  })
+);
 
 export const questionsTable = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom(),
