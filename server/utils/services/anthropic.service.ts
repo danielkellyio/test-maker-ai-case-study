@@ -82,7 +82,7 @@ export const useAnthropicService = async (event?: H3Event) => {
   };
 
   async function generateExam(
-    exam: Exam,
+    exam: Pick<Exam, "id">,
     {
       numberOfQuestions = 10,
       existingQuestions = [],

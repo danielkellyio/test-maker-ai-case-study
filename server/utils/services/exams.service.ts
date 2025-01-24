@@ -1,7 +1,8 @@
-import { examsTable } from "~/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import type { scannedPagesTable } from "~/server/db/schema";
+import { examsTable, questionsTable } from "~/server/db/schema";
+import { eq, and, sql } from "drizzle-orm";
 import type { H3Event } from "h3";
-export type Exam = typeof examsTable.$inferInsert;
+export type Exam = typeof examsTable.$inferSelect;
 
 export async function useExamsService(event?: H3Event) {
   const db = useDb(event);
@@ -21,11 +22,24 @@ export async function useExamsService(event?: H3Event) {
     });
   }
 
-  async function getExamWithScannedPages(examId: string) {
+  async function getExamWithScannedPages(examId: string): Promise<
+    | (Exam & {
+        questionsCount: number;
+        scannedPages: (typeof scannedPagesTable.$inferSelect)[];
+      })
+    | undefined
+  > {
     const exams = await db.query.examsTable.findFirst({
       where: and(eq(examsTable.id, examId), eq(examsTable.createdBy, user?.id)),
       with: {
         scannedPages: true,
+      },
+      extras: {
+        questionsCount: sql<number>`(
+          SELECT cast(count(*) as int)
+          FROM questions
+          WHERE questions."examId"= ${examId}
+        )`.as("questions_count"),
       },
     });
     return exams;
@@ -63,6 +77,13 @@ export async function useExamsService(event?: H3Event) {
     return exams.at(0);
   }
 
+  async function deleteExamQuestions(examId: string) {
+    const questions = await db
+      .delete(questionsTable)
+      .where(eq(questionsTable.examId, examId));
+    return questions;
+  }
+
   async function getExams() {
     console.log("getExams", user?.id);
     return db.query.examsTable.findMany({
@@ -80,5 +101,6 @@ export async function useExamsService(event?: H3Event) {
     getExamWithScannedPages,
     getExamWithQuestions,
     getExams,
+    deleteExamQuestions,
   };
 }

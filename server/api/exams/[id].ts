@@ -1,5 +1,17 @@
 import { z } from "zod";
 import { userIsAuthenticatedGuard } from "@/server/utils";
+import type {
+  examsTable,
+  scannedPagesTable,
+  questionsTable,
+} from "~/server/db/schema";
+
+export type Exam = typeof examsTable.$inferSelect & {
+  questionsCount?: number;
+  scannedPagesCount?: number;
+  scannedPages?: (typeof scannedPagesTable.$inferSelect)[];
+  questions?: (typeof questionsTable.$inferSelect)[];
+};
 
 export default defineApiEventHandler({
   /**
@@ -19,10 +31,11 @@ export default defineApiEventHandler({
    * Event handler to get an exam and its scanned pages
    * @returns The exam with its scanned pages
    */
-  async handler(event, payload) {
+  async handler(event, payload): Promise<Exam> {
     const { getExam, getExamWithScannedPages, getExamWithQuestions } =
       await useExamsService(event);
-    let exam;
+
+    let exam: Exam | undefined;
 
     if (payload.include?.includes("scannedPages")) {
       exam = await getExamWithScannedPages(payload.id);

@@ -1,19 +1,6 @@
 <script setup lang="ts">
-// Define the Exam interface
-interface Exam {
-  id: string;
-  name: string;
-  createdAt: string;
-  description?: string;
-  scannedPages?: Array<{
-    id: string;
-    pageNumber?: number;
-    pageImage?: string;
-    status: string;
-  }>;
-}
-
 // Get the exam ID from the route params
+import type { Exam } from "~/server/api/exams/[id]";
 const route = useRoute();
 const examId = computed(() => route.params.id as string);
 
@@ -22,14 +9,26 @@ const { data: exam, refresh } = await useFetch<Exam>(
   `/api/exams/${examId.value}`,
   {
     query: {
+      // Includes scanned pages and questionsCount
+      // no need to add questionsCount to the query
       include: "scannedPages",
     },
   }
 );
 
+// Dialog state for confirmation
+const showConfirmDialog = ref(false);
+
 interface ExamEditableFields {
   name: string;
   description: string;
+}
+
+if (!exam.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "Exam not found",
+  });
 }
 
 // Combined inline editing for both fields
@@ -93,6 +92,17 @@ watch(exam, (newExam) => {
 });
 
 async function generateExam() {
+  // If there are existing questions, show confirmation dialog
+  if (exam.value?.questionsCount && exam.value.questionsCount > 0) {
+    showConfirmDialog.value = true;
+    return;
+  }
+
+  await performGeneration();
+}
+
+// Separate function to perform the actual generation
+async function performGeneration() {
   await $fetch(`/api/exams/generate`, {
     method: "POST",
     body: {
@@ -100,6 +110,22 @@ async function generateExam() {
       numberOfQuestions: 10,
     },
   });
+  refresh();
+}
+
+// Add handlers for menu actions
+async function handleTakeExam() {
+  navigateTo(`/dashboard/exams/take/${examId.value}`);
+}
+
+async function handleEditQuestions() {
+  // TODO: Implement edit questions functionality
+  console.log("Edit questions clicked");
+}
+
+async function handleScanPages() {
+  // TODO: Implement scan pages functionality
+  console.log("Scan pages clicked");
 }
 </script>
 
@@ -133,16 +159,13 @@ async function generateExam() {
           <Icon name="heroicons:arrow-left" class="mr-2 w-4 h-4" />
           Back to Exams
         </Button>
-        <Button @click="generateExam">
-          <Icon name="heroicons:sparkles" class="mr-2 w-4 h-4" />
-          Generate Exam
-        </Button>
-        <Button as-child @click="generateExam">
-          <NuxtLink :to="`/dashboard/exams/take/${examId}`">
-            <Icon name="heroicons:arrow-right" class="mr-2 w-4 h-4" />
-            Take Exam
-          </NuxtLink>
-        </Button>
+        <ExamActionsMenuDumb
+          :exam-id="examId"
+          @generate="generateExam"
+          @take="handleTakeExam"
+          @edit="handleEditQuestions"
+          @scan="handleScanPages"
+        />
       </div>
 
       <div class="flex items-center text-sm text-muted-foreground">
@@ -194,5 +217,32 @@ async function generateExam() {
         This exam doesn't have any scanned pages yet.
       </p>
     </div>
+
+    <Dialog :open="showConfirmDialog" @update:open="showConfirmDialog = $event">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Exam Generation</DialogTitle>
+          <DialogDescription>
+            This exam already has {{ exam?.questionsCount }} questions.
+            Generating new questions will replace all existing ones. Are you
+            sure you want to continue?
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" @click="showConfirmDialog = false"
+            >Cancel</Button
+          >
+          <Button
+            @click="
+              async () => {
+                showConfirmDialog = false;
+                await performGeneration();
+              }
+            "
+            >Continue</Button
+          >
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
