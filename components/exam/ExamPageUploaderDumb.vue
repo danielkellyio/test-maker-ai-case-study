@@ -2,6 +2,11 @@
 import { useToast } from "@/components/ui/toast";
 const props = defineProps<{
   maxFileSize?: number; // in bytes, defaults to 10MB
+  examId?: string; // Optional - if provided, pages will be added to an existing exam
+}>();
+
+const emit = defineEmits<{
+  success: [examId: string];
 }>();
 
 const toast = useToast();
@@ -26,6 +31,7 @@ const {
         method: "POST",
         body: {
           images: files.map((file) => file.uploadedUrl),
+          examId: props.examId, // Pass the examId if it exists
         },
       });
 
@@ -34,7 +40,12 @@ const {
         description: "Your files have been queued for processing",
         variant: "default",
       });
-      navigateTo(`/dashboard/exams/${res.exam.id}`);
+
+      // Emit success with the exam ID and navigate only if not in modal mode
+      emit("success", res.exam.id);
+      if (!props.examId) {
+        navigateTo(`/dashboard/exams/${res.exam.id}`);
+      }
     } catch (error) {
       toast.toast({
         title: "Error",
@@ -52,7 +63,6 @@ const {
 <template>
   <Card class="w-full max-w-2xl">
     <CardHeader>
-      <CardTitle>Upload Textbook Pages</CardTitle>
       <CardDescription>
         Upload images of textbook pages to generate exam questions. Supported
         formats: PNG, JPG, JPEG

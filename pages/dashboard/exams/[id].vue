@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Get the exam ID from the route params
-import type { Exam } from "~/server/api/exams/[id]";
+import type { Exam } from "~/server/api/exams/[id].get";
 import { useToast } from "@/components/ui/toast/use-toast";
 
 const route = useRoute();
@@ -21,6 +21,9 @@ const { data: exam, refresh } = await useFetch<Exam>(
 
 // Dialog state for confirmation
 const showConfirmDialog = ref(false);
+
+// Add state for upload modal
+const showUploadModal = ref(false);
 
 interface ExamEditableFields {
   name: string;
@@ -126,9 +129,9 @@ async function handleEditQuestions() {
   console.log("Edit questions clicked");
 }
 
+// Update scan pages handler
 async function handleScanPages() {
-  // TODO: Implement scan pages functionality
-  console.log("Scan pages clicked");
+  showUploadModal.value = true;
 }
 
 // Add delete handler
@@ -273,5 +276,11 @@ async function handleDeleteExam() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    <!-- Add Upload Modal -->
+    <ExamPageUploadModalDumb
+      v-model:is-open="showUploadModal"
+      :exam-id="examId"
+    />
   </div>
 </template>
