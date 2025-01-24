@@ -68,15 +68,6 @@ const createExam = async () => {
             class="w-5 h-5 text-muted-foreground"
           />
         </div>
-
-        <div class="flex items-center mt-4 text-sm text-muted-foreground">
-          <Icon name="heroicons:document-text" class="mr-2 w-4 h-4" />
-          {{
-            exam.scannedPages?.length
-              ? `${exam.scannedPages.length} pages`
-              : "No pages"
-          }}
-        </div>
       </NuxtLink>
     </div>
 
