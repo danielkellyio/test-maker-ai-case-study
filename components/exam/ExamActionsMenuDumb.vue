@@ -8,7 +8,7 @@ defineProps<{
 // Define emits for menu actions
 const emit = defineEmits<{
   /** Emitted when user clicks any menu action */
-  (e: "generate" | "take" | "edit" | "scan"): void;
+  (e: "generate" | "take" | "edit" | "scan" | "delete"): void;
 }>();
 </script>
 
@@ -38,6 +38,14 @@ const emit = defineEmits<{
       <DropdownMenuItem @click="emit('scan')">
         <Icon name="heroicons:document-arrow-up" class="mr-2 w-4 h-4" />
         Scan Additional Pages
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        class="text-destructive focus:text-destructive"
+        @click="emit('delete')"
+      >
+        <Icon name="heroicons:trash" class="mr-2 w-4 h-4" />
+        Delete Exam
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

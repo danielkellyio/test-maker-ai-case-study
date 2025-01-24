@@ -1,8 +1,11 @@
 <script setup lang="ts">
 // Get the exam ID from the route params
 import type { Exam } from "~/server/api/exams/[id]";
+import { useToast } from "@/components/ui/toast/use-toast";
+
 const route = useRoute();
 const examId = computed(() => route.params.id as string);
+const { toast } = useToast();
 
 // Fetch exam details using the exams service
 const { data: exam, refresh } = await useFetch<Exam>(
@@ -127,6 +130,31 @@ async function handleScanPages() {
   // TODO: Implement scan pages functionality
   console.log("Scan pages clicked");
 }
+
+// Add delete handler
+async function handleDeleteExam() {
+  try {
+    await $fetch(`/api/exams/${examId.value}`, {
+      method: "DELETE",
+    });
+
+    // Show success notification
+    toast({
+      title: "Success",
+      description: `${exam.value?.name} deleted successfully`,
+    });
+
+    // Navigate back to exams list after successful deletion
+    navigateTo("/dashboard/exams");
+  } catch (error) {
+    console.error("Failed to delete exam:", error);
+    toast({
+      title: "Error",
+      description: "Failed to delete exam. Please try again.",
+      variant: "destructive",
+    });
+  }
+}
 </script>
 
 <template>
@@ -165,6 +193,7 @@ async function handleScanPages() {
           @take="handleTakeExam"
           @edit="handleEditQuestions"
           @scan="handleScanPages"
+          @delete="handleDeleteExam"
         />
       </div>
 
