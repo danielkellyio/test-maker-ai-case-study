@@ -1,9 +1,9 @@
 import { scannedPagesTable } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
-
+import type { H3Event } from "h3";
 export type PageStatus = typeof scannedPagesTable.$inferSelect.status;
 
-export function useScannedPagesService() {
+export async function useScannedPagesService(event?: H3Event) {
   const db = useDb();
 
   /**
@@ -32,7 +32,6 @@ export function useScannedPagesService() {
    * @param status
    */
   async function setPageStatus(pageId: string, status: PageStatus) {
-    console.log("Setting page status to " + status + " for page " + pageId);
     const db = useDb();
     const res = await db
       .update(scannedPagesTable)
@@ -95,9 +94,9 @@ export function useScannedPagesService() {
       const base64Image = Buffer.from(imageResponse).toString("base64");
 
       // extract the text from the page image
-      const aiResponse = await useAnthropicService().extractTextFromImage(
-        base64Image
-      );
+      const aiResponse = await (
+        await useAnthropicService()
+      ).extractTextFromImage(base64Image);
 
       // if the extraction is successful, update the page with the extracted text
       return await updatePage(page.id, {

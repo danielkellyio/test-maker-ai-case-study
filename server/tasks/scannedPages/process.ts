@@ -5,7 +5,7 @@ export default defineTask({
   },
   async run() {
     console.log("Processing scanned pages");
-    const { getPendingPages, extractPageText } = useScannedPagesService();
+    const { getPendingPages, extractPageText } = await useScannedPagesService();
 
     const scannedPages = await getPendingPages();
 

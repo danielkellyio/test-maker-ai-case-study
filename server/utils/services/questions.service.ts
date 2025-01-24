@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
-
 import { questionsTable, optionsTable } from "@/server/db/schema";
+import type { H3Event } from "h3";
 
 type Question = typeof questionsTable.$inferInsert;
 type Option = typeof optionsTable.$inferInsert;
 
-export function useQuestionsService() {
+export async function useQuestionsService(event?: H3Event) {
   async function getQuestionsForExam(examId: string) {
     const db = useDb();
     return db.query.questionsTable.findMany({

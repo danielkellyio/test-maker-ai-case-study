@@ -18,11 +18,14 @@ const route = useRoute();
 const examId = computed(() => route.params.id as string);
 
 // Fetch exam details using the exams service
-const { data: exam } = await useFetch<Exam>(`/api/exams/${examId.value}`, {
-  query: {
-    include: "scannedPages",
-  },
-});
+const { data: exam, refresh } = await useFetch<Exam>(
+  `/api/exams/${examId.value}`,
+  {
+    query: {
+      include: "scannedPages",
+    },
+  }
+);
 
 interface ExamEditableFields {
   name: string;
@@ -88,6 +91,16 @@ watch(exam, (newExam) => {
     description: newExam.description || "",
   });
 });
+
+async function generateExam() {
+  await $fetch(`/api/exams/generate`, {
+    method: "POST",
+    body: {
+      examId: examId.value,
+      numberOfQuestions: 10,
+    },
+  });
+}
 </script>
 
 <template>
@@ -120,6 +133,16 @@ watch(exam, (newExam) => {
           <Icon name="heroicons:arrow-left" class="mr-2 w-4 h-4" />
           Back to Exams
         </Button>
+        <Button @click="generateExam">
+          <Icon name="heroicons:sparkles" class="mr-2 w-4 h-4" />
+          Generate Exam
+        </Button>
+        <Button as-child @click="generateExam">
+          <NuxtLink :to="`/dashboard/exams/take/${examId}`">
+            <Icon name="heroicons:arrow-right" class="mr-2 w-4 h-4" />
+            Take Exam
+          </NuxtLink>
+        </Button>
       </div>
 
       <div class="flex items-center text-sm text-muted-foreground">
@@ -150,12 +173,13 @@ watch(exam, (newExam) => {
     <!-- Scanned Pages Grid -->
     <div
       v-if="exam.scannedPages"
-      class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+      class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
     >
       <ScannedPageCardDumb
         v-for="page in exam.scannedPages"
         :key="page.id"
         :page="page"
+        @refresh="refresh"
       />
     </div>
 

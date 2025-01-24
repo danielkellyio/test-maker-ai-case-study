@@ -21,7 +21,7 @@ export default defineApiEventHandler({
    */
   async handler(event, payload) {
     const { getExam, getExamWithScannedPages, getExamWithQuestions } =
-      useExamsService();
+      await useExamsService(event);
     let exam;
 
     if (payload.include?.includes("scannedPages")) {

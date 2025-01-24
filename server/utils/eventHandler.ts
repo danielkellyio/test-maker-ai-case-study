@@ -68,7 +68,6 @@ async function getPayload(event: H3Event) {
       ...body,
     };
   }
-  console.log("payload", payload);
 
   return {
     ...payload,

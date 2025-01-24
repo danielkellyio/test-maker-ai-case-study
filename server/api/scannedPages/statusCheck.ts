@@ -20,7 +20,7 @@ export default defineApiEventHandler({
    * Returns array of scanned pages with their current processing status
    */
   async handler(event, payload) {
-    const { pagesHaveBeenProccessed } = useScannedPagesService();
+    const { pagesHaveBeenProccessed } = await useScannedPagesService(event);
     const complete = pagesHaveBeenProccessed(payload.ids);
 
     return {

@@ -14,6 +14,8 @@ interface Props {
 
 defineProps<Props>();
 
+defineEmits(["refresh"]);
+
 // State for dialog
 const isOpen = ref(false);
 </script>
@@ -26,14 +28,21 @@ const isOpen = ref(false);
         :src="page.pageImage"
         :alt="`Page ${page.pageNumber || 'Unknown'}`"
         width="400"
-        height="500"
-        class="w-full h-[200px] object-cover"
+        height="400"
+        class="w-full h-[400px] object-cover"
+        fit="inside"
+        :modifiers="{
+          rotate: 90,
+        }"
       />
     </CardContent>
     <CardFooter class="p-4">
       <div class="flex justify-between items-center w-full">
         <span class="text-sm"> Page {{ page.pageNumber || "Unknown" }} </span>
-        <Badge :variant="page.status === 'completed' ? 'default' : 'secondary'">
+        <Badge
+          :variant="page.status === 'completed' ? 'default' : 'secondary'"
+          @click.stop.prevent="$emit('refresh')"
+        >
           {{ page.status }}
         </Badge>
       </div>

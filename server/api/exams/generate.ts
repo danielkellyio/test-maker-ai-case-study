@@ -8,16 +8,18 @@ export default defineApiEventHandler({
   }),
   async handler(event, payload) {
     const user = await serverSupabaseUser(event);
+    if (!user) throw Error("User not found");
 
     // Get the anthropic service to generate the exam
-    const { generateExam } = useAnthropicService();
-    const { createQuestions } = useQuestionsService();
+    const { generateExam } = await useAnthropicService(event);
+    const { createQuestions } = await useQuestionsService(event);
 
     try {
       // Get the exam from the database and generate test content
       const generatedExam = await generateExam(
         {
           id: payload.examId,
+          createdBy: user.id,
         },
         payload
       );

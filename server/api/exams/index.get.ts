@@ -2,9 +2,7 @@
 export default defineApiEventHandler({
   guards: [userIsAuthenticatedGuard],
   async handler(event) {
-    // Get database instance
-    const db = useDb();
-    const { getExams } = useExamsService();
+    const { getExams } = await useExamsService(event);
 
     return getExams();
   },

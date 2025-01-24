@@ -5,13 +5,14 @@ import {
   type LLMExamResponse,
 } from "@/server/prompts/createTestPrompt";
 import type { questionsTable } from "@/server/db/schema";
+import type { H3Event } from "h3";
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export const useAnthropicService = () => {
+export const useAnthropicService = async (event?: H3Event) => {
   /**
    * Extracts text content from an image using Claude Vision
    */
@@ -90,7 +91,7 @@ export const useAnthropicService = () => {
       existingQuestions?: (typeof questionsTable.$inferSelect)[];
     }
   ): Promise<LLMExamResponse> {
-    const { getExamWithScannedPages } = useExamsService();
+    const { getExamWithScannedPages } = await useExamsService(event);
 
     if (!exam || !exam.id) {
       throw createError({
@@ -111,8 +112,6 @@ export const useAnthropicService = () => {
     const prompt = createTestPrompt(examWithPages, existingQuestions, {
       numberOfQuestions,
     });
-
-    useLoggerService().log(prompt);
 
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
@@ -140,15 +139,12 @@ export const useAnthropicService = () => {
           numberOfQuestions:
             numberOfQuestions - parsedResponse.numberOfQuestionsCreated,
           existingQuestions: [
-            // @ts-expect-error - questions does exist
             ...existingQuestions,
-            // @ts-expect-error - questions does exist
             ...parsedResponse.questions,
           ],
         });
         return {
           ...moreQuestions,
-          // @ts-expect-error - questions does exist
           questions: [...parsedResponse.questions, ...moreQuestions.questions],
         };
       }

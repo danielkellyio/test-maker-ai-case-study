@@ -10,7 +10,7 @@ export default defineApiEventHandler({
   }),
   async handler(event, payload) {
     // Get exam service
-    const examService = useExamsService();
+    const examService = await useExamsService(event);
 
     // Update exam
     const updatedExam = await examService.updateExam(payload.id, payload);

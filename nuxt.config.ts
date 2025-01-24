@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    domains: ["avatars.githubusercontent.com"],
+    domains: ["avatars.githubusercontent.com", "127.0.0.1:18785"],
   },
   nitro: {
     experimental: {

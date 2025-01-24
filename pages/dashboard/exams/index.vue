@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Fetch exams data with useFetch since this runs at component setup
-const { data: exams } = await useFetch("/api/exams");
+const { data: exams, refresh, status } = await useFetch("/api/exams");
 
 // Handle creating a new exam
 const createExam = async () => {
@@ -14,7 +14,7 @@ const createExam = async () => {
       },
     });
     // Refresh the page to show the new exam
-    await refreshNuxtData();
+    refresh();
   } catch (error) {
     console.error("Failed to create exam:", error);
   }
@@ -26,7 +26,12 @@ const createExam = async () => {
     <!-- Header section -->
     <div class="flex justify-between items-center mb-8">
       <div>
-        <h1 class="text-3xl font-bold">Exams</h1>
+        <h1 class="text-3xl font-bold">
+          Exams
+          <span v-if="status === 'pending'" class="animate-pulse">
+            <Icon name="heroicons:spinner" class="w-4 h-4" />
+          </span>
+        </h1>
         <p class="mt-2 text-sm text-muted-foreground">
           Create and manage your exams
         </p>
