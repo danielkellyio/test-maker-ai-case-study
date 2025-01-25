@@ -10,6 +10,14 @@ interface Props {
 
 defineProps<Props>();
 defineEmits(["update:isOpen"]);
+
+// Track the loading state of the image
+const isImageLoading = ref(true);
+
+// Handler for when image finishes loading
+const onImageLoad = () => {
+  isImageLoading.value = false;
+};
 </script>
 
 <template>
@@ -20,8 +28,8 @@ defineEmits(["update:isOpen"]);
           <span>Page {{ page.pageNumber || "Unknown" }}</span>
         </DialogTitle>
       </DialogHeader>
-
-      <div class="overflow-y-auto h-full">
+      <LoadingSpinner v-if="isImageLoading" :with-backdrop="true" />
+      <div class="overflow-y-auto relative h-full">
         <NuxtImg
           v-if="page.pageImage"
           :src="page.pageImage"
@@ -33,6 +41,7 @@ defineEmits(["update:isOpen"]);
           :modifiers="{
             rotate: null,
           }"
+          @load="onImageLoad"
         />
       </div>
     </DialogContent>
