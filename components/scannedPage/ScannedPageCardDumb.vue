@@ -13,6 +13,8 @@ defineEmits(["refresh", "rescan"]);
 
 // State for dialog
 const isOpen = ref(false);
+// State for image maximization
+const isImageMaximized = ref(false);
 </script>
 
 <template>
@@ -27,7 +29,8 @@ const isOpen = ref(false);
         class="w-full h-[400px] object-cover"
         fit="inside"
         :modifiers="{
-          rotate: 90,
+          // https://stackoverflow.com/questions/77402332/nuxt3-nuxtimg-image-rotate-90-when-i-use-nuxtimg
+          rotate: null,
         }"
       />
     </CardContent>
@@ -88,14 +91,27 @@ const isOpen = ref(false);
 
       <!-- Page Content -->
       <div class="grid gap-4 py-4">
-        <div v-if="page.pageImage" class="flex justify-center">
-          <NuxtImg
-            :src="page.pageImage"
-            :alt="`Page ${page.pageNumber || 'Unknown'}`"
-            width="600"
-            height="800"
-            class="max-h-[400px] object-contain rounded-lg"
-          />
+        <div v-if="page.pageImage" class="flex relative justify-center">
+          <div class="relative">
+            <NuxtImg
+              :src="page.pageImage"
+              :alt="`Page ${page.pageNumber || 'Unknown'}`"
+              width="300"
+              height="400"
+              class="max-h-[400px] object-contain rounded-lg"
+              :modifiers="{
+                rotate: null,
+              }"
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              class="absolute top-2 right-2 backdrop-blur-sm bg-background/80 hover:bg-background/90"
+              @click="isImageMaximized = true"
+            >
+              <Icon name="heroicons:arrows-pointing-out" class="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         <!-- Markdown Content -->
@@ -105,6 +121,32 @@ const isOpen = ref(false);
         <div v-else class="italic text-center text-muted-foreground">
           No text content available for this page
         </div>
+      </div>
+    </DialogContent>
+  </Dialog>
+
+  <!-- Full Screen Image Dialog -->
+  <Dialog :open="isImageMaximized" @update:open="isImageMaximized = $event">
+    <DialogContent class="max-w-[95vw] max-h-[95vh] w-full h-full p-6">
+      <DialogHeader>
+        <DialogTitle class="flex justify-between items-center">
+          <span>Page {{ page.pageNumber || "Unknown" }}</span>
+        </DialogTitle>
+      </DialogHeader>
+
+      <div class="overflow-y-auto h-full">
+        <NuxtImg
+          v-if="page.pageImage"
+          :src="page.pageImage"
+          :alt="`Page ${page.pageNumber || 'Unknown'}`"
+          class="object-contain w-auto max-w-full h-auto"
+          width="2400"
+          height="2400"
+          fit="contain"
+          :modifiers="{
+            rotate: null,
+          }"
+        />
       </div>
     </DialogContent>
   </Dialog>
