@@ -196,7 +196,7 @@ const {
         :disabled="!allUploadsComplete || !uploadedFiles.length"
         @click="processFiles"
       >
-        Generate Exam
+        Scan Pages
         <Icon name="heroicons:arrow-right" class="ml-2 w-4 h-4" />
       </Button>
     </CardFooter>

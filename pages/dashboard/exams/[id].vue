@@ -186,6 +186,7 @@ async function handleDeleteExam() {
             {{ exam.name }}
           </h1>
         </div>
+        <ExamScannedPagesStatus :exam-id="examId" />
         <Button variant="outline" as="a" href="/dashboard/exams">
           <Icon name="heroicons:arrow-left" class="mr-2 w-4 h-4" />
           Back to Exams
