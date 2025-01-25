@@ -12,6 +12,7 @@ const examTemplateForLLM = {
       type: "multiple-choice",
       question: "What is 2 + 2 ?", // Clear, direct question
       // Multiple choice should have 3-5 plausible options
+      // and 1 or more correct answers (prefer 1 correct answer most of the time)
       options: [
         {
           option: "4", // Correct answer
@@ -38,9 +39,9 @@ const examTemplateForLLM = {
     },
     {
       type: "fill-in-the-blank",
-      question: "The _____ of 2 and 2 is 4",
-      answer: "sum",
-      alternateAnswers: ["sum", "addition"],
+      question: "The _____ of 2 and 2 is 4", // Use _____ to indicate the blank
+      answer: ["sum"], // Use an array of strings to indicate the answer as there may be multiple blanks. Even if there is only one blank, it should be an array.
+      alternateAnswers: [["sum"], ["addition"]],
       explanation: "The sum of 2 and 2 is 4",
     },
     {

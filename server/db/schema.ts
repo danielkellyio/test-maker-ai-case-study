@@ -97,6 +97,26 @@ export const submissionsTable = pgTable("submissions", {
   userId: uuid("userId"),
 });
 
+export const submissionsRelations = relations(submissionsTable, ({ one }) => ({
+  exam: one(examsTable, {
+    fields: [submissionsTable.examId],
+    references: [examsTable.id],
+  }),
+}));
+
+export const submissionAnswersTable = pgTable("submissionAnswers", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  submissionId: uuid("submissionId").references(() => submissionsTable.id, {
+    onDelete: "cascade",
+  }),
+  questionId: uuid("questionId").references(() => questionsTable.id, {
+    onDelete: "cascade",
+  }),
+  answer: text("answer"),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt"),
+});
+
 export const tagsTable = pgTable("tags", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name"),

@@ -60,23 +60,27 @@ const isComplete = computed(() => {
 </script>
 
 <template>
-  <form class="mb-10 space-y-8" @submit.prevent="handleSubmit">
-    <div
-      v-for="question in examData.questions"
-      :key="question.id"
-      class="space-y-4"
-    >
-      <InteractiveExamQuestionDumb
-        :question="question"
-        :model-value="answers[question.id]"
-        @update:model-value="(val) => updateAnswer(question.id, val)"
-      />
-    </div>
+  <!-- <div class="grid grid-cols-2"> -->
+  <div>
+    <form class="mb-10 space-y-8" @submit.prevent="handleSubmit">
+      <div
+        v-for="question in examData.questions"
+        :key="question.id"
+        class="space-y-4"
+      >
+        <InteractiveExamQuestionDumb
+          :question="question"
+          :model-value="answers[question.id]"
+          @update:model-value="(val) => updateAnswer(question.id, val)"
+        />
+      </div>
 
-    <div class="flex justify-end mt-8">
-      <Button type="submit" :disabled="!isComplete" variant="outline">
-        Submit Exam
-      </Button>
-    </div>
-  </form>
+      <div class="flex justify-end mt-8">
+        <Button type="submit" :disabled="!isComplete" variant="outline">
+          Submit Exam
+        </Button>
+      </div>
+    </form>
+    <!-- <pre>{{ answers }}</pre> -->
+  </div>
 </template>
