@@ -1,20 +1,15 @@
 <script setup lang="ts">
-// Define props for the component
-interface ScannedPage {
-  id: string;
-  pageNumber?: number;
-  pageImage?: string;
-  status: string;
-  pageText?: string;
-}
+import type { scannedPagesTable } from "~/server/db/schema";
+
+type ScannedPage = typeof scannedPagesTable.$inferSelect;
 
 interface Props {
   page: ScannedPage;
+  isRescanning?: boolean;
 }
 
 defineProps<Props>();
-
-defineEmits(["refresh"]);
+defineEmits(["refresh", "rescan"]);
 
 // State for dialog
 const isOpen = ref(false);
@@ -40,7 +35,13 @@ const isOpen = ref(false);
       <div class="flex justify-between items-center w-full">
         <span class="text-sm"> Page {{ page.pageNumber || "Unknown" }} </span>
         <Badge
-          :variant="page.status === 'completed' ? 'default' : 'secondary'"
+          :variant="
+            page.status === 'completed'
+              ? 'default'
+              : page.status === 'failed'
+              ? 'destructive'
+              : 'secondary'
+          "
           @click.stop.prevent="$emit('refresh')"
         >
           {{ page.status }}
@@ -54,7 +55,35 @@ const isOpen = ref(false);
     <DialogContent class="max-w-3xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Page {{ page.pageNumber || "Unknown" }}</DialogTitle>
-        <DialogDescription> Status: {{ page.status }} </DialogDescription>
+        <DialogDescription class="flex gap-2 items-center">
+          Status:
+          <Badge
+            :variant="
+              page.status === 'completed'
+                ? 'default'
+                : page.status === 'failed'
+                ? 'destructive'
+                : 'secondary'
+            "
+          >
+            {{ page.status }}
+          </Badge>
+          <Button
+            v-if="page.status === 'failed'"
+            variant="outline"
+            size="sm"
+            :disabled="isRescanning"
+            @click.stop="$emit('rescan')"
+          >
+            <Icon
+              v-if="isRescanning"
+              name="heroicons:arrow-path"
+              class="mr-2 w-4 h-4 animate-spin"
+            />
+            <Icon v-else name="heroicons:arrow-path" class="mr-2 w-4 h-4" />
+            Rescan Page
+          </Button>
+        </DialogDescription>
       </DialogHeader>
 
       <!-- Page Content -->

@@ -231,7 +231,7 @@ async function handleDeleteExam() {
       v-if="exam.scannedPages"
       class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4"
     >
-      <ScannedPageCardDumb
+      <ScannedPageCard
         v-for="page in exam.scannedPages"
         :key="page.id"
         :page="page"

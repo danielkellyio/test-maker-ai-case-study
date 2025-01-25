@@ -149,6 +149,7 @@ export async function useScannedPagesService(event?: H3Event) {
     extractPageText,
     insertPages,
     getPages,
+    getPage,
     pagesHaveBeenProccessed,
   };
 }
