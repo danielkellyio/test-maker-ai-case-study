@@ -6,3 +6,4 @@ export * from "./exams.service";
 export * from "./logger.service";
 export * from "./questions.service";
 export * from "./user.service";
+export * from "./submissions.service";

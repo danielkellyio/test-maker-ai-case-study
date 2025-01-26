@@ -14,12 +14,14 @@ export const scannedPagesTable = pgTable("scannedPages", {
   createdBy: uuid("createdBy"),
   status: text("status", {
     enum: ["pending", "processing", "completed", "failed"],
-  }).default("pending"),
+  })
+    .default("pending")
+    .notNull(),
 });
 
 export const examsTable = pgTable("exams", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name"),
+  name: text("name").notNull(),
   description: text("description"),
   createdBy: uuid("createdBy"),
   createdAt: timestamp("createdAt").defaultNow(),
@@ -44,13 +46,15 @@ export const scannedPagesRelations = relations(
 
 export const questionsTable = pgTable("questions", {
   id: uuid("id").primaryKey().defaultRandom(),
-  examId: uuid("examId").references(() => examsTable.id, {
-    onDelete: "cascade",
-  }),
+  examId: uuid("examId")
+    .references(() => examsTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   type: text("type", {
     enum: ["multiple-choice", "true-false", "fill-in-the-blank", "essay"],
-  }),
-  question: text("question"),
+  }).notNull(),
+  question: text("question").notNull(),
   answer: text("answer"), // ONLY for essay, true-false, and fill-in-the-blank NOT for multiple-choice
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
@@ -70,11 +74,13 @@ export const questionsRelations = relations(
 
 export const optionsTable = pgTable("options", {
   id: uuid("id").primaryKey().defaultRandom(),
-  questionId: uuid("questionId").references(() => questionsTable.id, {
-    onDelete: "cascade",
-  }),
-  option: text("option"),
-  isCorrect: integer("isCorrect").default(0),
+  questionId: uuid("questionId")
+    .references(() => questionsTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  option: text("option").notNull(),
+  isCorrect: integer("isCorrect").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
   explanation: text("explanation"),
@@ -89,9 +95,11 @@ export const optionsRelations = relations(optionsTable, ({ one }) => ({
 
 export const submissionsTable = pgTable("submissions", {
   id: uuid("id").primaryKey().defaultRandom(),
-  examId: uuid("examId").references(() => examsTable.id, {
-    onDelete: "cascade",
-  }),
+  examId: uuid("examId")
+    .references(() => examsTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
   userId: uuid("userId"),
@@ -106,12 +114,16 @@ export const submissionsRelations = relations(submissionsTable, ({ one }) => ({
 
 export const submissionAnswersTable = pgTable("submissionAnswers", {
   id: uuid("id").primaryKey().defaultRandom(),
-  submissionId: uuid("submissionId").references(() => submissionsTable.id, {
-    onDelete: "cascade",
-  }),
-  questionId: uuid("questionId").references(() => questionsTable.id, {
-    onDelete: "cascade",
-  }),
+  submissionId: uuid("submissionId")
+    .references(() => submissionsTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  questionId: uuid("questionId")
+    .references(() => questionsTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   answer: text("answer"),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt"),
