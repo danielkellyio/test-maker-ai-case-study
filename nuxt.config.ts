@@ -71,4 +71,7 @@ export default defineNuxtConfig({
       cookieRedirect: false,
     },
   },
+  devServer: {
+    port: 3001,
+  },
 });
