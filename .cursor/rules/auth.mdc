@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Authentication and User Management
+
+This sections describes some patterns to follow when dealing with authentication and the current user.
+
+- The project uses Supabase and the Nuxt Supabase module for dealing with authentication.

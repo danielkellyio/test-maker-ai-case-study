@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Data Storage Coding Patterns and Rules
+
+This section describes some patterns to follow when interacting with a database.
+
+- When you need to interact with the DB in an API endpoint do NOT do so directly. Instead always use a server-side service that interacts with the database.
+- Drizzle ORM is setup with a postgres database is setup in this project
+- The schema definitions are found in `server/db/schema.ts`
+- Seeds should be written in `server/tasks/seeds`
+- All tables should include createdAt and updatedAt columns
+- Do NOT use the supabase client side (browser) client to interact with the database. Use only API endpoints, server-side services, and drizzle
+- Whenever you need access to the db instance to ineract with drizzle, you can call `useDb`. It is auto imported on the server
+
+## Supabase Coding Patterns and Rules
+
+This section describes some patterns to follow when interacting with Supabase and the Nuxt Supabase module.
+
+- The Nuxt Supabase module is installed in this project
+- ONLY use the Nuxt Supabase module to handle auth and file upload related functionality. For all database interactions only use API endpoints, drizzle, etc as already directed.
+- The `useSupabaseClient`, `useSupabaseSession`, and `useSupabaseUser` composables are auto imported in the Nuxt App
+- In the `server` directory you can interact with supabase via the following composables: `serverSupabaseClient`, `serverSupabaseServiceRole`, `serverSupabaseSession`, and `serverSupabaseUser`
+- Each of these server-side supabase helpers can be imported from "#supabase/server"
+
+## Dummy Data Coding Patterns and Rules
+
+When adding new dummy data always:
+
+- Use placeholder images from lorem picsum when no specific image is provided or available within the codebase
+
+- Use placeholder avatar images from https://avatar.iran.liara.run/public/[boy|girl] for dummy avatar data if nothing specific is provided
+

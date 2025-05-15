@@ -1,0 +1,57 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Vue Component Coding Patterns and Rules
+
+This section describes some patterns to follow when creating new or updating existing Vue components.
+
+- Shad-cn Vue is installed and can be used to generate most common UI elements. Only create a new custom component is shad-cn doesn't already have a solution.
+- Shad-cn Vue components can be installed with a bash command like so: `npx shadcn-vue@latest add button` [or any other component]
+- NEVER try to generate a ShadCN component, always run the command
+- Do NOT create long components with a lot of responsibilities. Instead, break components down into smaller, more focused components
+- make most components "dumb" components. These focus on:
+  - presentation
+  - simple logic
+- Limit "smart" components that make requests to API endpoints to only what's absolutely necessary
+- break complex logic into composables or utility functions
+- Always use TypeScript to define all components.
+- Use Typescript to define component props and emits.
+- use JS docs to document component props and emits
+- Use script setup
+- Provide the component sections in the following order:
+  - script
+  - template
+  - style
+- Use the built in Nuxt $fetch function instead of browser native fetch when reacting to user events and in lifecylcle hooks (except setup). Basically, anything that only runs in the browser (in the client) should use $fetch
+- Any code that runs at the root level of script setup, should make https requests with useFetch or useAsyncData. Prefer useFetch when possible.
+- Example of when to use $fetch vs useFetch:
+
+```
+<script setup lang="ts">
+  const { data: users } = await useFetch("/api/users");
+  async function createUser(newUser: User){
+   const newUser = await $fetch('/api/users', {
+       method: 'POST',
+       body: newUser
+   })
+  }
+```
+
+-Components are named and auto imported based on their location within the components directory. For example:
+
+- A component stored in `@/components/MyComponent` will be named MyComponent.
+- A component stored in `@/components/users/UsersMyComponent` will be named UsersMyComponent
+- ALWAYS prefix the component name with any directory it's nested under within the components directory
+
+- Always use NuxtImg as a drop in replacement for ANY img tag. Be sure to specify appropriate width and heights to prevent CLS and configure styles so that the image is NEVER stretched or distorted
+- When using NuxtImg on a src url that is from another site, make sure the domain is registered in nuxt.config.ts like this:
+
+  ```
+  image: {
+    domains: ["images.unsplash.com", "[the-domain-here]", "etc"],
+  },
+  ```
+
+

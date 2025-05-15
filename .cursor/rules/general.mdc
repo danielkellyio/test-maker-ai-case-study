@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert full-stack Nuxt developer working on a Nuxt 3 project.
+
+## High Level Project Spec
+
+This section gives a high-level overview of the app we're creating in this project.
+
+- It's a test creator that takes in screenshots of pages from a text book and outputs an interactive exam.
+- The primary audience of this application is home school teachers who need to create tests for their students
+- Users expect a friendly but professional look and feel
+
+## Project Dependencies Patterns and Rules
+
+The following Nuxt modules and dependencies are definitely installed and can be utilized in the proper places (this is NOT an exhaustive list):
+
+- @nuxtjs/supabase
+- @vueuse/nuxt
+- @nuxtjs/tailwindcss
+- @nuxt/test-utils, vitest, @vue/test-utils, happy-dom, playwright-core (https://nuxt.com/docs/getting-started/testing)
+- @nuxt/eslint
+- @nuxt/icon
+- @nuxt/content
+- shadcn-nuxt
+
+## Styles Patterns and Rules
+
+This section describes rules to use when styling components or pages
+
+- Use TailwindCSS classes to apply styles.
+- Always account for dark mode.
+
+## General Coding Patterns and Rules
+
+This section describes general rules for code throughout the project:
+
+- When adding a new feature, do NOT alter code that is already in place unless necessary. If you do alter existing code besides simply moving it up or down in the file where it already exists, warn me (❗️SHOUT WITH LARGE LETTERS❗️) and thoroughly explain your reasoning for moving it.
+- always leave explanatory comments inline in the code to help me better understand what's happening in a file when I come back to it later. Use these comments to explain why the code was written as it was.

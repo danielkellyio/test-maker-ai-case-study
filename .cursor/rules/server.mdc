@@ -1,0 +1,56 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## API Endpoint Coding Patterns and Rules
+
+This section describes some patterns to follow when creating and ONLY when creating a new API endpoint in the `server/api` directory.
+
+- define an API endpoint as in this example:
+
+```
+import { z } from "zod";
+export default defineApiEventHandler({
+  validation: z.object({
+    name: z.string(),
+    age: z.coerce.number().optional(),
+  }),
+  handler(event, payload) {
+    return payload;
+  },
+});
+```
+
+- Use zod to validate the request payload (this includes query variables, JSON body, and route params all spread into a single object)
+- extract database and other storage logic into a separate service and use the service in the API endpoint
+- create all CRUD methods for an API as seperate files. For example:
+  - `[file-path]` | [method] | `[url]`
+  - `server/api/posts/index.ts` | GET | `api/posts/`
+  - `server/api/posts/index.post.ts` | POST | `api/posts/`
+  - `server/api/posts/[id].put.ts` | PUT | `api/posts/[id]`
+  - `server/api/posts/[id].delete.ts` | DELETE | `api/posts/[id]`
+- NEVER handle different request methods for an API endpoint in the same file.
+  
+## Server Service Coding Patterns and Rules
+
+This section describes some patterns to follow when creating server-side services in `server/utils/services` for use within API endpoints. These rules ONLY apply for server-side services.
+
+- all server-side services should live in relevant files within `@/server/utils/services` (such as `@/server/utils/services/users.service.ts` for user services)
+- All server-side services should also be exported from `@/server/utils/services/index.ts` so that they are auto-imported. For example:
+- For example:
+
+  ```
+  // @/server/helpers/services/user.service.ts
+  export const useUserService(){}
+
+  // @/server/helper/services/index.ts
+  export * from "./user.service.ts"
+
+  ```
+
+## API Endpoint Guards Coding Patterns and Rules
+
+- define and/or use existing server utils that are defined in `server/utils/guards` to apply route specific middleware/guards.
+- Such middleware/guards should be functions that either throw a new error with createError and a relevant statusCode or return an aribtrary body.
+- This middleware should also always be passed the validated payload

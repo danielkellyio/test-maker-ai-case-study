@@ -92,13 +92,12 @@ This section describes some patterns to follow when creating server-side service
 This section describes some patterns to follow when creating new or updating existing Vue components.
 
 - Shad-cn Vue is installed and can be used to generate most common UI elements. Only create a new custom component is shad-cn doesn't already have a solution.
-- Shad-cn Vue components can be installed with a bash command like so: npx shadcn-vue@latest add button [or any other component]
-- NEVER try to generate a ShadCN component, rather always prompt me to install it when needed
+- Shad-cn Vue components can be installed with a bash command like so: `npx shadcn-vue@latest add button` [or any other component]
+- NEVER try to generate a ShadCN component, always run the command
 - Do NOT create long components with a lot of responsibilities. Instead, break components down into smaller, more focused components
 - make most components "dumb" components. These focus on:
   - presentation
   - simple logic
-  - Dumb components should include the keyword `Dumb` before the file suffix like this: `UserProfileCardDumb.vue`
 - Limit "smart" components that make requests to API endpoints to only what's absolutely necessary
 - break complex logic into composables or utility functions
 - Always use TypeScript to define all components.
